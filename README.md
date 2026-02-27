@@ -1,4 +1,4 @@
-# gradle-vivo-plugin
+# gradle-vivo-install-autoconfirm-plugin
 
 自动安装 APK 到 vivo 设备的 Gradle 插件。
 
@@ -14,20 +14,28 @@
 
 ```kotlin
 plugins {
-    // ... 其他插件
+    id("com.github.ihrthk.vivo-install-autoconfirm-plugin") version "1.0.1"
 }
+```
 
-// 应用 Vivo ADB 自动安装插件
-buildscript {
+在 `settings.gradle.kts` 中添加：
+
+```kotlin
+pluginManagement {
     repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
         maven("https://jitpack.io")
     }
-    dependencies {
-        classpath("com.github.ihrthk.gradle-vivo-plugin:gradle-vivo-plugin:1.0.0")
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.github.ihrthk.vivo-install-autoconfirm-plugin") {
+                useModule("com.github.ihrthk.gradle-vivo-install-autoconfirm-plugin:gradle-vivo-install-autoconfirm-plugin:${requested.version}")
+            }
+        }
     }
 }
-
-apply(plugin = "com.github.ihrthk.vivo-plugin")
 ```
 
 ## 运行命令
@@ -50,7 +58,13 @@ apply(plugin = "com.github.ihrthk.vivo-plugin")
 1. `ANDROID_SDK_ROOT` 环境变量（推荐）
 2. `ANDROID_HOME` 环境变量
 
-如果都未设置，将抛出异常提示配置。
+如果都未设置，可在 `build.gradle.kts` 中配置：
+
+```kotlin
+vivoInstall {
+    sdkRoot.set("/path/to/android-sdk")
+}
+```
 
 **建议在 `~/.zshrc` 或 `~/.bash_profile` 中添加：**
 
@@ -64,11 +78,11 @@ export ANDROID_SDK_ROOT=/path/to/android-sdk
 
 ```kotlin
 pluginManagement {
-    includeBuild("/path/to/gradle-vivo-plugin")
+    includeBuild("/path/to/gradle-vivo-install-autoconfirm-plugin")
 }
 ```
 
 ## 链接
 
-- GitHub: https://github.com/ihrthk/gradle-vivo-plugin
-- JitPack: https://jitpack.io/#ihrthk/gradle-vivo-plugin
+- GitHub: https://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin
+- JitPack: https://jitpack.io/#ihrthk/gradle-vivo-install-autoconfirm-plugin

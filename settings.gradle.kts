@@ -1,1 +1,1 @@
-rootProject.name = "gradle-vivo-plugin"
+rootProject.name = "gradle-vivo-install-autoconfirm-plugin"
