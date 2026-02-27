@@ -10,57 +10,27 @@
 
 ## 使用方式
 
-### 1. 添加 JitPack 仓库
-
-在 `settings.gradle.kts` 中：
-
-```kotlin
-pluginManagement {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-        maven("https://jitpack.io")
-    }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "com.github.ihrthk.vivo-plugin") {
-                useModule("com.github.ihrthk.gradle-vivo-plugin:com.github.ihrthk.vivo-plugin.gradle.plugin:${requested.version}")
-            }
-        }
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        google()
-        mavenCentral()
-        maven("https://jitpack.io")
-    }
-}
-```
-
-### 2. 应用插件
-
-在 `app/build.gradle.kts` 中：
+在 `app/build.gradle.kts` 中添加：
 
 ```kotlin
 plugins {
-    id("com.github.ihrthk.vivo-plugin") version "1.0.0"
+    // ... 其他插件
 }
+
+// 应用 Vivo ADB 自动安装插件
+buildscript {
+    repositories {
+        maven("https://jitpack.io")
+    }
+    dependencies {
+        classpath("com.github.ihrthk.gradle-vivo-plugin:gradle-vivo-plugin:1.0.0")
+    }
+}
+
+apply(plugin = "com.github.ihrthk.vivo-plugin")
 ```
 
-### 3. 配置（可选）
-
-如果 SDK 路径未在环境变量中设置，可以在 `app/build.gradle.kts` 中配置：
-
-```kotlin
-vivoInstall {
-    sdkRoot.set("/path/to/android-sdk")
-}
-```
-
-### 4. 运行命令
+## 运行命令
 
 ```bash
 # 仅构建，不安装
@@ -77,18 +47,16 @@ vivoInstall {
 
 插件会按以下顺序查找 Android SDK 路径：
 
-1. `vivoInstall.sdkRoot` 配置值
-2. `ANDROID_SDK_ROOT` 环境变量
-3. `ANDROID_HOME` 环境变量
+1. `ANDROID_SDK_ROOT` 环境变量（推荐）
+2. `ANDROID_HOME` 环境变量
 
 如果都未设置，将抛出异常提示配置。
 
-## 任务
+**建议在 `~/.zshrc` 或 `~/.bash_profile` 中添加：**
 
-插件会为每个 assemble 变体创建对应的安装任务：
-
-- `vivoInstallDebug` - 安装 Debug APK
-- `vivoInstallRelease` - 安装 Release APK
+```bash
+export ANDROID_SDK_ROOT=/path/to/android-sdk
+```
 
 ## 本地开发
 
