@@ -1,0 +1,7 @@
+# JitPack 构建配置
+jdk:
+  - openjdk-17
+before_install:
+  - ./gradlew build --no-daemon --stacktrace
+install:
+  - ./gradlew publishToMavenLocal --no-daemon --stacktrace
