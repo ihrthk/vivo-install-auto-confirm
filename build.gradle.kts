@@ -20,8 +20,8 @@ kotlin {
 }
 
 gradlePlugin {
-    website.set("https://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin")
-    vcsUrl.set("https://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin")
+    website.set("https://github.com/ihrthk/vivo-install-autoconfirm")
+    vcsUrl.set("https://github.com/ihrthk/vivo-install-autoconfirm")
     plugins {
         create("vivoInstall") {
             id = "com.github.ihrthk.vivo-install-autoconfirm-plugin"
@@ -36,7 +36,7 @@ gradlePlugin {
 publishing {
     publications {
         create<MavenPublication>("pluginMaven") {
-            artifactId = "gradle-vivo-install-autoconfirm-plugin"
+            artifactId = "vivo-install-autoconfirm"
         }
     }
 }
@@ -63,7 +63,7 @@ tasks.register("createPluginMarkerPom") {
                 <packaging>pom</packaging>
                 <name>Vivo ADB Auto Confirm Plugin</name>
                 <description>自动安装 APK 到 vivo 设备的 Gradle 插件</description>
-                <url>https://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin</url>
+                <url>https://github.com/ihrthk/vivo-install-autoconfirm</url>
 
                 <licenses>
                     <license>
@@ -81,15 +81,15 @@ tasks.register("createPluginMarkerPom") {
                 </developers>
 
                 <scm>
-                    <connection>scm:git:git://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin.git</connection>
-                    <developerConnection>scm:git:ssh://github.com:ihrthk/gradle-vivo-install-autoconfirm-plugin.git</developerConnection>
-                    <url>https://github.com/ihrthk/gradle-vivo-install-autoconfirm-plugin</url>
+                    <connection>scm:git:git://github.com/ihrthk/vivo-install-autoconfirm.git</connection>
+                    <developerConnection>scm:git:ssh://github.com:ihrthk/vivo-install-autoconfirm.git</developerConnection>
+                    <url>https://github.com/ihrthk/vivo-install-autoconfirm</url>
                 </scm>
 
                 <dependencies>
                     <dependency>
-                        <groupId>com.github.ihrthk.gradle-vivo-install-autoconfirm-plugin</groupId>
-                        <artifactId>gradle-vivo-install-autoconfirm-plugin</artifactId>
+                        <groupId>com.github.ihrthk.vivo-install-autoconfirm</groupId>
+                        <artifactId>vivo-install-autoconfirm</artifactId>
                         <version>${project.version}</version>
                     </dependency>
                 </dependencies>
@@ -117,13 +117,13 @@ tasks.named("publishToMavenLocal") {
 tasks.register("jitpackPublish") {
     dependsOn("createPluginMarkerPom", "build")
     doLast {
-        // JitPack 会将 groupId 改为 com.github.ihrthk.gradle-vivo-install-autoconfirm-plugin
+        // JitPack 会将 groupId 改为 com.github.ihrthk.vivo-install-autoconfirm
         val sourcePom = file("$buildDir/plugin-marker/pom.xml")
-        val targetDir = file("$buildDir/repo/com/github/ihrthk/gradle-vivo-install-autoconfirm-plugin/com.github.ihrthk.vivo-install-autoconfirm-plugin.gradle.plugin/${project.version}")
+        val targetDir = file("$buildDir/repo/com/github/ihrthk/vivo-install-autoconfirm/com.github.ihrthk.vivo-install-autoconfirm-plugin.gradle.plugin/${project.version}")
         targetDir.mkdirs()
 
         val modifiedPom = sourcePom.readText()
-            .replace("<groupId>com.github.ihrthk</groupId>", "<groupId>com.github.ihrthk.gradle-vivo-install-autoconfirm-plugin</groupId>")
+            .replace("<groupId>com.github.ihrthk</groupId>", "<groupId>com.github.ihrthk.vivo-install-autoconfirm</groupId>")
 
         File(targetDir, "com.github.ihrthk.vivo-install-autoconfirm-plugin.gradle.plugin-${project.version}.pom")
             .writeText(modifiedPom)
