@@ -1,4 +1,4 @@
-package com.sobrr.gradle
+package com.zhangls.vivo.install
 
 import org.gradle.api.GradleException
 import org.gradle.api.provider.Property

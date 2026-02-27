@@ -1,1 +1,1 @@
-rootProject.name = "vivo-install-autoconfirm"
+rootProject.name = "vivo-install-auto-confirm"

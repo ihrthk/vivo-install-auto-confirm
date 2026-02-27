@@ -1,4 +1,4 @@
-# vivo-install-autoconfirm
+# vivo-install-auto-confirm
 
 自动安装 APK 到 vivo 设备的 Gradle 插件。
 
@@ -14,7 +14,7 @@
 
 ```kotlin
 plugins {
-    id("com.github.ihrthk.vivo-install-autoconfirm-plugin") version "1.0.1"
+    id("com.github.ihrthk.vivo-install-auto-confirm-plugin") version "1.0.1"
 }
 ```
 
@@ -30,8 +30,8 @@ pluginManagement {
     }
     resolutionStrategy {
         eachPlugin {
-            if (requested.id.id == "com.github.ihrthk.vivo-install-autoconfirm-plugin") {
-                useModule("com.github.ihrthk.vivo-install-autoconfirm:vivo-install-autoconfirm:${requested.version}")
+            if (requested.id.id == "com.github.ihrthk.vivo-install-auto-confirm-plugin") {
+                useModule("com.github.ihrthk.vivo-install-auto-confirm:vivo-install-auto-confirm:${requested.version}")
             }
         }
     }
@@ -78,11 +78,11 @@ export ANDROID_SDK_ROOT=/path/to/android-sdk
 
 ```kotlin
 pluginManagement {
-    includeBuild("/Users/zhangls/AiProjects/vivo-install-autoconfirm")
+    includeBuild("/Users/zhangls/AiProjects/vivo-install-auto-confirm")
 }
 ```
 
 ## 链接
 
-- GitHub: https://github.com/ihrthk/vivo-install-autoconfirm
-- JitPack: https://jitpack.io/#ihrthk/vivo-install-autoconfirm
+- GitHub: https://github.com/ihrthk/vivo-install-auto-confirm
+- JitPack: https://jitpack.io/#ihrthk/vivo-install-auto-confirm
