@@ -15,8 +15,25 @@
 在 `settings.gradle.kts` 中：
 
 ```kotlin
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://jitpack.io")
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.github.ihrthk.vivo-plugin") {
+                useModule("com.github.ihrthk.gradle-vivo-plugin:com.github.ihrthk.vivo-plugin.gradle.plugin:${requested.version}")
+            }
+        }
+    }
+}
+
 dependencyResolutionManagement {
     repositories {
+        google()
         mavenCentral()
         maven("https://jitpack.io")
     }
@@ -72,3 +89,18 @@ vivoInstall {
 
 - `vivoInstallDebug` - 安装 Debug APK
 - `vivoInstallRelease` - 安装 Release APK
+
+## 本地开发
+
+如需本地开发，可在 `settings.gradle.kts` 中添加：
+
+```kotlin
+pluginManagement {
+    includeBuild("/path/to/gradle-vivo-plugin")
+}
+```
+
+## 链接
+
+- GitHub: https://github.com/ihrthk/gradle-vivo-plugin
+- JitPack: https://jitpack.io/#ihrthk/gradle-vivo-plugin
