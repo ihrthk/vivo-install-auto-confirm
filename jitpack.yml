@@ -4,4 +4,4 @@ jdk:
 before_install:
   - ./gradlew build --no-daemon --stacktrace
 install:
-  - ./gradlew publishToMavenLocal --no-daemon --stacktrace
+  - ./gradlew publishAllPublicationsToMavenRepository --no-daemon --stacktrace

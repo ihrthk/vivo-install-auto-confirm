@@ -35,8 +35,13 @@ gradlePlugin {
 
 publishing {
     publications {
-        create<MavenPublication>("pluginMaven") {
-            artifactId = "vivo-install-auto-confirm"
+        // 为每个插件自动创建 plugin marker publication
+        // Gradle 会自动生成 plugin marker POM
+        withType<MavenPublication>().configureEach {
+            // 修正 artifactId 为 Gradle 期望的格式
+            if (name == "pluginMaven") {
+                artifactId = "gradle-vivo-plugin"
+            }
         }
     }
 }
