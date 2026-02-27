@@ -49,6 +49,13 @@ abstract class VivoInstallTask : BaseVivoTask() {
     @get:Optional
     abstract val autoLaunch: Property<Boolean>
 
+    /**
+     * 安装后到启动前的等待时间（秒）
+     */
+    @get:Input
+    @get:Optional
+    abstract val waitTime: Property<Long>
+
     // ----------------------------------------
     // 任务执行逻辑
     // ----------------------------------------
@@ -64,8 +71,11 @@ abstract class VivoInstallTask : BaseVivoTask() {
         // 安装 APK 并获取应用信息
         val apkInfo = installApk(apkFile)
 
-        // 如果启用自动启动，则启动应用
+        // 如果启用自动启动，则等待后启动应用
         if (autoLaunch.getOrElse(false)) {
+            val waitSeconds = waitTime.getOrElse(30L)
+            project.logger.lifecycle("等待 ${waitSeconds} 秒后启动应用...")
+            Thread.sleep(waitSeconds * 1000)
             launchApp(apkInfo)
         }
     }

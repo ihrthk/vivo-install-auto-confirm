@@ -10,9 +10,13 @@ import org.gradle.api.Project
  * Vivo ADB 自动安装 Gradle 插件
  *
  * 使用方式：
- *   ./gradlew assembleDebug                               仅构建，不安装
- *   ./gradlew assembleDebug -Pvivo-auto-install           构建后自动安装
- *   ./gradlew assembleDebug -Pvivo-auto-install -Pvivo-auto-launch  安装后自动启动
+ *   ./gradlew assembleDebug -Pvivo-install    构建后自动安装并启动
+ *
+ *   在 build.gradle.kts 中配置：
+ *   vivoInstall {
+ *       autoLaunch.set(true)   // 默认 true
+ *       waitTime.set(30L)      // 默认 30秒
+ *   }
  */
 class VivoInstallPlugin : Plugin<Project> {
 
@@ -26,10 +30,12 @@ class VivoInstallPlugin : Plugin<Project> {
             VivoInstallExtension::class.java
         )
 
-        // 只有添加 -Pvivo-auto-install 参数时才注册任务
-        if (project.hasProperty("vivo-auto-install")) {
-            val autoLaunch = project.hasProperty("vivo-auto-launch")
+        // 设置默认值
+        extension.autoLaunch.convention(true)
+        extension.waitTime.convention(30L)
 
+        // 只有添加 -Pvivo-install 参数时才注册任务
+        if (project.hasProperty("vivo-install")) {
             project.afterEvaluate {
                 project.tasks
                     .filter { it.name.startsWith("assemble") }
@@ -47,7 +53,8 @@ class VivoInstallPlugin : Plugin<Project> {
                         installTask.configure { task ->
                             task.variantName.set(variantName)
                             task.sdkRoot.set(extension.sdkRoot)
-                            task.autoLaunch.set(autoLaunch)
+                            task.autoLaunch.set(extension.autoLaunch)
+                            task.waitTime.set(extension.waitTime)
                             task.group = "vivo"
                             task.description = "安装 ${variantName} APK 到设备"
                         }
