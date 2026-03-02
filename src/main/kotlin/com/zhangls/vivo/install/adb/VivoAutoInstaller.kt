@@ -1,4 +1,4 @@
-package com.zhangls.vivo.install
+package com.zhangls.vivo.install.adb
 
 import org.gradle.api.logging.Logger
 import java.io.File
@@ -16,12 +16,18 @@ import java.io.File
  * 4. 输出格式化的日志信息
  *
  * @property adbHelper ADB 辅助类
- * @property config 自动确认配置
+ * @property waitTime 等待安装界面出现的时间（秒）
+ * @property checkboxX 复选框点击 X 坐标
+ * @property checkboxY 复选框点击 Y 坐标
+ * @property buttonYPercent 安装按钮 Y 坐标占屏幕高度的百分比
  * @property logger Gradle 日志记录器
  */
 class VivoAutoInstaller(
     private val adbHelper: AdbHelper,
-    private val config: AutoConfirmConfig,
+    private val waitTime: Long,
+    private val checkboxX: Int,
+    private val checkboxY: Int,
+    private val buttonYPercent: Float,
     private val logger: Logger
 ) {
 
@@ -58,8 +64,8 @@ class VivoAutoInstaller(
         // 启动后台安装进程
         val process = adbHelper.startInstallProcess(apkFile)
 
-        // 如果是 vivo 设备且启用自动确认，执行自动确认流程
-        if (isVivoDevice() && config.enabled) {
+        // 如果是 vivo 设备，执行自动确认流程
+        if (isVivoDevice()) {
             performAutoConfirm()
         }
 
@@ -94,16 +100,16 @@ class VivoAutoInstaller(
         logger.lifecycle("开始自动确认流程...")
 
         // 1. 等待安装界面出现（额外增加 5 秒确保界面完全加载）
-        val waitTime = config.waitTime + 5
-        logger.lifecycle("等待 $waitTime 秒让安装界面出现...")
-        Thread.sleep(waitTime * 1000)
+        val actualWaitTime = waitTime + 5
+        logger.lifecycle("等待 $actualWaitTime 秒让安装界面出现...")
+        Thread.sleep(actualWaitTime * 1000)
 
         // 获取屏幕尺寸以计算按钮位置
         val deviceInfo = adbHelper.getDeviceInfo()
 
         // 2. 点击复选框
-        logger.lifecycle("点击复选框 (${config.checkboxX}, ${config.checkboxY})...")
-        adbHelper.tap(config.checkboxX, config.checkboxY)
+        logger.lifecycle("点击复选框 ($checkboxX, $checkboxY)...")
+        adbHelper.tap(checkboxX, checkboxY)
 
         // 3. 等待 500ms
         Thread.sleep(500)
@@ -111,9 +117,9 @@ class VivoAutoInstaller(
         // 4. 点击安装按钮
         val buttonX = if (deviceInfo.hasScreenSize()) deviceInfo.screenWidth / 2 else 540
         val buttonY = if (deviceInfo.hasScreenSize()) {
-            (deviceInfo.screenHeight * config.buttonYPercent).toInt()
+            (deviceInfo.screenHeight * buttonYPercent).toInt()
         } else {
-            (config.buttonYPercent * 2400).toInt()
+            (buttonYPercent * 2400).toInt()
         }
         logger.lifecycle("点击安装按钮 ($buttonX, $buttonY)...")
         adbHelper.tap(buttonX, buttonY)

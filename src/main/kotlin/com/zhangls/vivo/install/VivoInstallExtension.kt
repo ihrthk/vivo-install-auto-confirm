@@ -3,9 +3,6 @@ package com.zhangls.vivo.install
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Internal
 
-// ============================================
-// 插件扩展配置
-// ============================================
 /**
  * Vivo 安装插件扩展配置
  *
@@ -14,7 +11,6 @@ import org.gradle.api.tasks.Internal
  * vivoInstall {
  *     sdkRoot.set("/custom/sdk/path")
  *     autoLaunch.set(true)
- *     waitTime.set(30L)
  * }
  * ```
  */
@@ -39,25 +35,9 @@ abstract class VivoInstallExtension {
     @get:Internal
     abstract val autoLaunch: Property<Boolean>
 
-    /**
-     * 安装后到启动前的等待时间（秒）
-     *
-     * 默认 30 秒
-     */
-    @get:Internal
-    abstract val waitTime: Property<Long>
-
     // ----------------------------------------
     // 自动确认配置属性
     // ----------------------------------------
-    /**
-     * 是否启用 vivo 设备自动确认安装
-     *
-     * 默认 true
-     */
-    @get:Internal
-    abstract val autoConfirm: Property<Boolean>
-
     /**
      * 等待安装界面出现的时间（秒）
      *

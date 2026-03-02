@@ -1,4 +1,4 @@
-package com.zhangls.vivo.install
+package com.zhangls.vivo.install.model
 
 // ============================================
 // 设备信息数据类

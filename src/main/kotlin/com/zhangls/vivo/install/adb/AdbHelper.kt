@@ -1,5 +1,6 @@
-package com.zhangls.vivo.install
+package com.zhangls.vivo.install.adb
 
+import com.zhangls.vivo.install.model.DeviceInfo
 import org.gradle.api.GradleException
 import org.gradle.api.logging.Logger
 import java.io.File
