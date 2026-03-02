@@ -15,7 +15,7 @@ import org.gradle.api.Project
  *   在 build.gradle.kts 中配置：
  *   vivoInstall {
  *       autoLaunch.set(true)   // 默认 true
- *       waitTime.set(30L)      // 默认 30秒
+ *       waitTime.set(10L)      // 默认 10秒
  *   }
  */
 class VivoInstallPlugin : Plugin<Project> {
@@ -32,7 +32,14 @@ class VivoInstallPlugin : Plugin<Project> {
 
         // 设置默认值
         extension.autoLaunch.convention(true)
-        extension.waitTime.convention(30L)
+        extension.waitTime.convention(10L)
+
+        // 设置自动确认默认值
+        extension.autoConfirm.convention(true)
+        extension.autoConfirmWaitTime.convention(30L)
+        extension.checkboxX.convention(365)
+        extension.checkboxY.convention(2270)
+        extension.buttonYPercent.convention(0.93f)  // 2455/2640 ≈ 93%
 
         // 只有添加 -Pvivo-install 参数时才注册任务
         if (project.hasProperty("vivo-install")) {
@@ -55,6 +62,11 @@ class VivoInstallPlugin : Plugin<Project> {
                             task.sdkRoot.set(extension.sdkRoot)
                             task.autoLaunch.set(extension.autoLaunch)
                             task.waitTime.set(extension.waitTime)
+                            task.autoConfirm.set(extension.autoConfirm)
+                            task.autoConfirmWaitTime.set(extension.autoConfirmWaitTime)
+                            task.checkboxX.set(extension.checkboxX)
+                            task.checkboxY.set(extension.checkboxY)
+                            task.buttonYPercent.set(extension.buttonYPercent)
                             task.group = "vivo"
                             task.description = "安装 ${variantName} APK 到设备"
                         }

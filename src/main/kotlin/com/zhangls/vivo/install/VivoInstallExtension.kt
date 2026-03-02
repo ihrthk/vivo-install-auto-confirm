@@ -46,4 +46,47 @@ abstract class VivoInstallExtension {
      */
     @get:Internal
     abstract val waitTime: Property<Long>
+
+    // ----------------------------------------
+    // 自动确认配置属性
+    // ----------------------------------------
+    /**
+     * 是否启用 vivo 设备自动确认安装
+     *
+     * 默认 true
+     */
+    @get:Internal
+    abstract val autoConfirm: Property<Boolean>
+
+    /**
+     * 等待安装界面出现的时间（秒）
+     *
+     * 默认 30 秒
+     */
+    @get:Internal
+    abstract val autoConfirmWaitTime: Property<Long>
+
+    /**
+     * 复选框点击 X 坐标
+     *
+     * 默认 365
+     */
+    @get:Internal
+    abstract val checkboxX: Property<Int>
+
+    /**
+     * 复选框点击 Y 坐标
+     *
+     * 默认 2270
+     */
+    @get:Internal
+    abstract val checkboxY: Property<Int>
+
+    /**
+     * 安装按钮 Y 坐标占屏幕高度的百分比
+     *
+     * 默认 0.93（93%）
+     */
+    @get:Internal
+    abstract val buttonYPercent: Property<Float>
 }

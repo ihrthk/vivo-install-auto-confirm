@@ -71,11 +71,8 @@ abstract class VivoInstallTask : BaseVivoTask() {
         // 安装 APK 并获取应用信息
         val apkInfo = installApk(apkFile)
 
-        // 如果启用自动启动，则等待后启动应用
+        // 如果启用自动启动，则直接启动应用
         if (autoLaunch.getOrElse(false)) {
-            val waitSeconds = waitTime.getOrElse(30L)
-            project.logger.lifecycle("等待 ${waitSeconds} 秒后启动应用...")
-            Thread.sleep(waitSeconds * 1000)
             launchApp(apkInfo)
         }
     }
@@ -97,6 +94,44 @@ abstract class BaseVivoTask : org.gradle.api.DefaultTask() {
      */
     @get:Internal
     abstract val sdkRoot: Property<String>
+
+    // ----------------------------------------
+    // 自动确认配置属性
+    // ----------------------------------------
+    /**
+     * 是否启用 vivo 设备自动确认安装
+     */
+    @get:Input
+    @get:Optional
+    abstract val autoConfirm: Property<Boolean>
+
+    /**
+     * 等待安装界面出现的时间（秒）
+     */
+    @get:Input
+    @get:Optional
+    abstract val autoConfirmWaitTime: Property<Long>
+
+    /**
+     * 复选框点击 X 坐标
+     */
+    @get:Input
+    @get:Optional
+    abstract val checkboxX: Property<Int>
+
+    /**
+     * 复选框点击 Y 坐标
+     */
+    @get:Input
+    @get:Optional
+    abstract val checkboxY: Property<Int>
+
+    /**
+     * 安装按钮 Y 坐标占屏幕高度的百分比
+     */
+    @get:Input
+    @get:Optional
+    abstract val buttonYPercent: Property<Float>
 
     // ----------------------------------------
     // 获取 SDK 路径
@@ -248,6 +283,10 @@ abstract class BaseVivoTask : org.gradle.api.DefaultTask() {
     /**
      * 通过 ADB 安装 APK 到设备
      *
+     * 根据配置选择安装方式：
+     * - 启用自动确认时：使用后台安装 + 自动确认
+     * - 未启用自动确认时：使用同步安装（原有方式）
+     *
      * @param apkFile 要安装的 APK 文件
      * @return APK 应用信息
      * @throws GradleException 安装失败时抛出异常
@@ -255,26 +294,53 @@ abstract class BaseVivoTask : org.gradle.api.DefaultTask() {
     protected fun installApk(apkFile: File): ApkInfo {
         val adbPath = resolveAdbPath()
 
-        project.logger.lifecycle("正在安装: ${apkFile.name}")
+        // 检查是否启用自动确认
+        val useAutoConfirm = autoConfirm.getOrElse(false)
 
-        val process = ProcessBuilder(adbPath, "install", "-r", apkFile.absolutePath)
-            .redirectErrorStream(true)
-            .start()
+        return if (useAutoConfirm) {
+            // 使用自动确认方式安装
+            project.logger.lifecycle("正在安装: ${apkFile.name}")
 
-        // 输出 ADB 安装日志
-        process.inputStream.bufferedReader().use { reader ->
-            reader.lines().forEach { line ->
-                project.logger.lifecycle(line)
+            val adbHelper = AdbHelper(adbPath, project.logger)
+            val config = AutoConfirmConfig(
+                enabled = true,
+                waitTime = autoConfirmWaitTime.getOrElse(30L),
+                checkboxX = checkboxX.getOrElse(365),
+                checkboxY = checkboxY.getOrElse(2270),
+                buttonYPercent = buttonYPercent.getOrElse(0.93f)
+            )
+            val autoInstaller = VivoAutoInstaller(adbHelper, config, project.logger)
+
+            val success = autoInstaller.installWithAutoConfirm(apkFile)
+            if (!success) {
+                throw GradleException("adb 安装失败")
             }
-        }
 
-        val exitCode = process.waitFor()
-        if (exitCode != 0) {
-            throw GradleException("adb 安装失败，退出码: $exitCode")
-        }
+            // 从 APK 解析应用信息
+            getApkInfo(apkFile)
+        } else {
+            // 使用原有的同步安装方式
+            project.logger.lifecycle("正在安装: ${apkFile.name}")
 
-        // 从 APK 解析应用信息
-        return getApkInfo(apkFile)
+            val process = ProcessBuilder(adbPath, "install", "-r", apkFile.absolutePath)
+                .redirectErrorStream(true)
+                .start()
+
+            // 输出 ADB 安装日志
+            process.inputStream.bufferedReader().use { reader ->
+                reader.lines().forEach { line ->
+                    project.logger.lifecycle(line)
+                }
+            }
+
+            val exitCode = process.waitFor()
+            if (exitCode != 0) {
+                throw GradleException("adb 安装失败，退出码: $exitCode")
+            }
+
+            // 从 APK 解析应用信息
+            getApkInfo(apkFile)
+        }
     }
 
     /**
