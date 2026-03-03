@@ -30,7 +30,7 @@ class VivoInstallPlugin : Plugin<Project> {
         extension.autoLaunch.convention(true)
 
         // 设置自动确认默认值
-        extension.autoConfirmWaitTime.convention(30L)
+        extension.autoConfirmWaitTime.convention(5L)
         extension.checkboxX.convention(365)
         extension.checkboxY.convention(2270)
         extension.buttonYPercent.convention(0.93f)  // 2455/2640 ≈ 93%

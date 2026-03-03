@@ -99,10 +99,9 @@ class VivoAutoInstaller(
     private fun performAutoConfirm() {
         logger.lifecycle("开始自动确认流程...")
 
-        // 1. 等待安装界面出现（额外增加 5 秒确保界面完全加载）
-        val actualWaitTime = waitTime + 5
-        logger.lifecycle("等待 $actualWaitTime 秒让安装界面出现...")
-        Thread.sleep(actualWaitTime * 1000)
+        // 1. 等待安装界面出现
+        logger.lifecycle("等待 $waitTime 秒让安装界面出现...")
+        Thread.sleep(waitTime * 1000)
 
         // 获取屏幕尺寸以计算按钮位置
         val deviceInfo = adbHelper.getDeviceInfo()

@@ -101,7 +101,7 @@ open class VivoInstallTask : DefaultTask() {
         val adbHelper = AdbHelper(adbPath, project.logger)
         val autoInstaller = VivoAutoInstaller(
             adbHelper = adbHelper,
-            waitTime = ext.autoConfirmWaitTime.getOrElse(30L),
+            waitTime = ext.autoConfirmWaitTime.getOrElse(5L),
             checkboxX = ext.checkboxX.getOrElse(365),
             checkboxY = ext.checkboxY.getOrElse(2270),
             buttonYPercent = ext.buttonYPercent.getOrElse(0.93f),

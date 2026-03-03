@@ -41,7 +41,7 @@ abstract class VivoInstallExtension {
     /**
      * 等待安装界面出现的时间（秒）
      *
-     * 默认 30 秒
+     * 默认 5 秒
      */
     @get:Internal
     abstract val autoConfirmWaitTime: Property<Long>
