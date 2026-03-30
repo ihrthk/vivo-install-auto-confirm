@@ -43,7 +43,7 @@ dependencyResolutionManagement {
 
 ```kotlin
 plugins {
-    id("com.github.ihrthk.vivo-install-auto-confirm-plugin") version "1.0.3"
+    id("io.github.ihrthk.vivo-install-auto-confirm-plugin") version "1.0.3"
 }
 ```
 
